@@ -46,5 +46,37 @@
     </footer>
 
     <script src="app.js"></script>
+    <script>
+      // Adiciona a renderização dos participantes em cada card de atividade
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/activities")
+          .then((res) => res.json())
+          .then((activities) => {
+            const list = document.getElementById("activities-list");
+            list.innerHTML = "";
+            Object.entries(activities).forEach(([name, data]) => {
+              const card = document.createElement("div");
+              card.className = "activity-card";
+              card.innerHTML = `
+                <h4>${name}</h4>
+                <p>${data.description}</p>
+                <p><strong>Schedule:</strong> ${data.schedule}</p>
+                <p><strong>Max participants:</strong> ${data.max_participants}</p>
+                <div class="participants-section">
+                  <span class="participants-title">Participants:</span>
+                  <ul class="participants-list">
+                    ${
+                      data.participants.length
+                        ? data.participants.map(email => `<li>${email}</li>`).join("")
+                        : '<li class="no-participants">No participants yet</li>'
+                    }
+                  </ul>
+                </div>
+              `;
+              list.appendChild(card);
+            });
+          });
+      });
+    </script>
   </body>
 </html>
